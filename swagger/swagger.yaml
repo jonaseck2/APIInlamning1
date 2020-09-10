@@ -1,0 +1,175 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: HomeNet
+  description: |
+    listings of properties for sale
+  license:
+    name: MIT
+servers:
+- url: http://localhost:3000
+paths:
+  /listings:
+    get:
+      summary: Lists all objects
+      operationId: listListings
+      tags:
+      - listings
+      parameters:
+        - name: limit
+          in: query
+          description: How many list object to return at the same time
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Array of listings
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/ResponseListings"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Add a new object
+      operationId: listListings
+      tags:
+      - listings
+      responses:
+        '201':
+          description: List object that need to be added to the store
+          # content:
+          #   application/json:    
+          #     schema:
+          #       $ref: "#/components/schemas/ResponseListings"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update an existing object in list
+      operationId: listListings
+      tags:
+      - listings
+      responses:
+        '201':
+          description: Listobject that needs to be added to/in the list
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/ResponseListings"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+   /listings/{id}:
+      get:
+        summary: Find object in list by id
+        operationId: listListings
+        tags:
+          - listings
+        responses:
+          '200':
+            description: ID of object to return
+            content:
+              application/json:    
+                schema:
+                  $ref: "#/components/schemas/ResponseListings"
+          default:
+            description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+      delete:
+        summary: Deletes an object from list
+        operationId: listListings
+        tags:
+          - listings
+        responses:
+          '204':
+            description: Object ID to delete
+            content:
+              application/json:    
+                schema:
+                  $ref: "#/components/schemas/ResponseListings"
+          default:
+            description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+    
+components:
+  schemas:
+    Listing:
+      type: object
+      properties:
+# Add properties for your listings here   
+        id:
+          type: integer
+          example: 1
+        address:
+          type: string
+          example: Kungsgatan
+        location:
+          type: string
+          example: Stockholm
+        price:
+          type: number
+          example: 22.50
+        monthlyFee:
+          type: number
+          example: 690
+        coordinate:
+          type: object
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+    ResponseListing:
+      allOf:
+      - $ref: "#/components/schemas/Listing"
+      - properties:
+          __v:
+            type: integer
+            format: uint32
+          _id:
+            type: string
+            format: uuid
+    ResponseListings:
+      type: array
+      items:
+        $ref: "#/components/schemas/ResponseListing"
+    Error:
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          properties:
+            expose:
+              type: boolean
+            statusCode:
+              type: integer
+              format: uint32
+            status:
+              type: integer
+              format: uint32
+            body:
+              title: body as escaped json
+              type: string
+            type:
+              title: fault desciption
+              type: string
