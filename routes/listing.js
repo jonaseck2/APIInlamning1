@@ -1,11 +1,11 @@
 get = (req, res, next) => {
   var query;
 if(req.query.address){
-  query = req.models.address.find({address: req.query.address})
+  query = req.models.Listing.find({address: req.query.address})
 }
 else
 {
-  query = req.models.listings.find()
+  query = req.models.Listing.find()
 }
 
   query.exec().then((listings) => {
